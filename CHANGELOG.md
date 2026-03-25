@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.2.4] - 2026-03-24
+
+### Added
+- Shift+J/K vim-style keys now scroll the diff pane (in addition to Shift+↑↓)
+
+### Fixed
+- Diff scroll now has upper bound - can't scroll past end of content into blank space
+- Updated diff pane title to show "Shift+↑↓ or J/K to scroll"
+
 ## [0.2.3] - 2026-03-24
 
 ### Added

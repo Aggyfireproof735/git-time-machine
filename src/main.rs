@@ -45,6 +45,7 @@ struct App {
     show_diff: bool,
     diff_content: String,
     diff_scroll_offset: u16,
+    diff_visible_height: u16,
     has_uncommitted_changes: bool,
 }
 
@@ -67,6 +68,7 @@ impl App {
             show_diff: false,
             diff_content: String::new(),
             diff_scroll_offset: 0,
+            diff_visible_height: 10,
             has_uncommitted_changes,
         })
     }
@@ -144,7 +146,9 @@ impl App {
     }
 
     fn scroll_diff_down(&mut self) {
-        self.diff_scroll_offset = self.diff_scroll_offset.saturating_add(1);
+        let line_count = self.diff_content.lines().count() as u16;
+        let max_scroll = line_count.saturating_sub(self.diff_visible_height);
+        self.diff_scroll_offset = (self.diff_scroll_offset + 1).min(max_scroll);
     }
 
     fn show_confirmation_dialog(&mut self) {
@@ -243,6 +247,16 @@ fn run_app<B: ratatui::backend::Backend>(
                             app.scroll_diff_up();
                         } else {
                             app.previous()?;
+                        }
+                    }
+                    KeyCode::Char('J') => {
+                        if app.show_diff {
+                            app.scroll_diff_down();
+                        }
+                    }
+                    KeyCode::Char('K') => {
+                        if app.show_diff {
+                            app.scroll_diff_up();
                         }
                     }
                     KeyCode::Home => {
@@ -413,6 +427,9 @@ fn ui(f: &mut Frame, app: &mut App) {
 
     // Diff preview pane
     if app.show_diff {
+        let diff_area = main_chunks[1];
+        app.diff_visible_height = diff_area.height.saturating_sub(2); // Subtract borders
+        
         let diff_text = if app.diff_content.is_empty() {
             "Loading diff..."
         } else {
@@ -423,14 +440,14 @@ fn ui(f: &mut Frame, app: &mut App) {
             .block(
                 Block::default()
                     .borders(Borders::ALL)
-                    .title(" Diff Preview (Shift+↑↓ to scroll) ")
+                    .title(" Diff Preview (Shift+↑↓ or J/K to scroll) ")
                     .border_style(Style::default().fg(Color::Cyan)),
             )
             .style(Style::default().fg(Color::White))
             .scroll((app.diff_scroll_offset, 0))
             .wrap(ratatui::widgets::Wrap { trim: false });
 
-        f.render_widget(diff, main_chunks[1]);
+        f.render_widget(diff, diff_area);
     }
 
     // Footer with preview or confirmation dialog
