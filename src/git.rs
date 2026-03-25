@@ -40,7 +40,7 @@ impl GitManager {
             .current_dir(&self.repo_path)
             .args([
                 "reflog",
-                "--format=%H|%s|%ct",
+                "--format=%H%x00%s%x00%ct",
                 &format!("-n{}", limit),
             ])
             .output()
@@ -54,7 +54,7 @@ impl GitManager {
         let mut entries = Vec::new();
 
         for line in reflog_output.lines() {
-            let parts: Vec<&str> = line.split('|').collect();
+            let parts: Vec<&str> = line.splitn(3, '\x00').collect();
             if parts.len() >= 3 {
                 let hash = parts[0].to_string();
                 let message = parts[1].to_string();

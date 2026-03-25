@@ -44,6 +44,7 @@ struct App {
     show_confirmation: bool,
     show_diff: bool,
     diff_content: String,
+    diff_scroll_offset: u16,
     has_uncommitted_changes: bool,
 }
 
@@ -65,6 +66,7 @@ impl App {
             show_confirmation: false,
             show_diff: false,
             diff_content: String::new(),
+            diff_scroll_offset: 0,
             has_uncommitted_changes,
         })
     }
@@ -93,6 +95,7 @@ impl App {
         if self.show_diff {
             if let Some(entry) = self.entries.get(i) {
                 self.diff_content = self.git_manager.get_diff_stat(&entry.hash)?;
+                self.diff_scroll_offset = 0;
             }
         }
         Ok(())
@@ -118,6 +121,7 @@ impl App {
         if self.show_diff {
             if let Some(entry) = self.entries.get(i) {
                 self.diff_content = self.git_manager.get_diff_stat(&entry.hash)?;
+                self.diff_scroll_offset = 0;
             }
         }
         Ok(())
@@ -131,7 +135,16 @@ impl App {
                 self.diff_content = self.git_manager.get_diff_stat(&entry.hash)?;
             }
         }
+        self.diff_scroll_offset = 0;
         Ok(())
+    }
+
+    fn scroll_diff_up(&mut self) {
+        self.diff_scroll_offset = self.diff_scroll_offset.saturating_sub(1);
+    }
+
+    fn scroll_diff_down(&mut self) {
+        self.diff_scroll_offset = self.diff_scroll_offset.saturating_add(1);
     }
 
     fn show_confirmation_dialog(&mut self) {
@@ -142,17 +155,27 @@ impl App {
         self.show_confirmation = false;
     }
 
-    fn restore_selected(&self) -> Result<()> {
+    fn restore_selected(&self) -> Result<Option<(String, String)>> {
         let idx = self.list_state.selected().unwrap_or(0);
         if let Some(entry) = self.entries.get(idx) {
             self.git_manager.restore_to_commit(&entry.hash)?;
+            Ok(Some((entry.hash[..7].to_string(), entry.message.clone())))
+        } else {
+            Ok(None)
         }
-        Ok(())
     }
 }
 
 fn main() -> Result<()> {
     let cli = Cli::parse();
+    
+    // Setup panic hook to restore terminal
+    let original_hook = std::panic::take_hook();
+    std::panic::set_hook(Box::new(move |panic_info| {
+        let _ = disable_raw_mode();
+        let _ = execute!(io::stdout(), LeaveAlternateScreen, DisableMouseCapture);
+        original_hook(panic_info);
+    }));
     
     // Setup terminal
     enable_raw_mode()?;
@@ -174,17 +197,23 @@ fn main() -> Result<()> {
     )?;
     terminal.show_cursor()?;
 
-    if let Err(err) = res {
-        println!("Error: {:?}", err);
+    match res {
+        Ok(Some((hash, message))) => {
+            println!("✅ Restored to {} - {}", hash, message);
+            Ok(())
+        }
+        Ok(None) => Ok(()),
+        Err(err) => {
+            println!("Error: {:?}", err);
+            Err(err)
+        }
     }
-
-    Ok(())
 }
 
 fn run_app<B: ratatui::backend::Backend>(
     terminal: &mut Terminal<B>,
     app: &mut App,
-) -> Result<()> {
+) -> Result<Option<(String, String)>> {
     loop {
         terminal.draw(|f| ui(f, app))?;
 
@@ -192,8 +221,7 @@ fn run_app<B: ratatui::backend::Backend>(
             if app.show_confirmation {
                 match key.code {
                     KeyCode::Char('y') | KeyCode::Char('Y') => {
-                        app.restore_selected()?;
-                        return Ok(());
+                        return app.restore_selected();
                     }
                     KeyCode::Char('n') | KeyCode::Char('N') | KeyCode::Esc => {
                         app.cancel_confirmation();
@@ -202,15 +230,28 @@ fn run_app<B: ratatui::backend::Backend>(
                 }
             } else {
                 match key.code {
-                    KeyCode::Char('q') | KeyCode::Esc => return Ok(()),
-                    KeyCode::Down | KeyCode::Char('j') => app.next()?,
-                    KeyCode::Up | KeyCode::Char('k') => app.previous()?,
+                    KeyCode::Char('q') | KeyCode::Esc => return Ok(None),
+                    KeyCode::Down | KeyCode::Char('j') => {
+                        if app.show_diff && key.modifiers.contains(event::KeyModifiers::SHIFT) {
+                            app.scroll_diff_down();
+                        } else {
+                            app.next()?;
+                        }
+                    }
+                    KeyCode::Up | KeyCode::Char('k') => {
+                        if app.show_diff && key.modifiers.contains(event::KeyModifiers::SHIFT) {
+                            app.scroll_diff_up();
+                        } else {
+                            app.previous()?;
+                        }
+                    }
                     KeyCode::Home => {
                         if !app.entries.is_empty() {
                             app.list_state.select(Some(0));
                             if app.show_diff {
                                 if let Some(entry) = app.entries.first() {
                                     app.diff_content = app.git_manager.get_diff_stat(&entry.hash)?;
+                                    app.diff_scroll_offset = 0;
                                 }
                             }
                         }
@@ -222,6 +263,7 @@ fn run_app<B: ratatui::backend::Backend>(
                             if app.show_diff {
                                 if let Some(entry) = app.entries.get(last) {
                                     app.diff_content = app.git_manager.get_diff_stat(&entry.hash)?;
+                                    app.diff_scroll_offset = 0;
                                 }
                             }
                         }
@@ -234,6 +276,7 @@ fn run_app<B: ratatui::backend::Backend>(
                             if app.show_diff {
                                 if let Some(entry) = app.entries.get(next) {
                                     app.diff_content = app.git_manager.get_diff_stat(&entry.hash)?;
+                                    app.diff_scroll_offset = 0;
                                 }
                             }
                         }
@@ -246,6 +289,7 @@ fn run_app<B: ratatui::backend::Backend>(
                             if app.show_diff {
                                 if let Some(entry) = app.entries.get(prev) {
                                     app.diff_content = app.git_manager.get_diff_stat(&entry.hash)?;
+                                    app.diff_scroll_offset = 0;
                                 }
                             }
                         }
@@ -379,10 +423,11 @@ fn ui(f: &mut Frame, app: &mut App) {
             .block(
                 Block::default()
                     .borders(Borders::ALL)
-                    .title(" Diff Preview (git diff --stat) ")
+                    .title(" Diff Preview (Shift+↑↓ to scroll) ")
                     .border_style(Style::default().fg(Color::Cyan)),
             )
             .style(Style::default().fg(Color::White))
+            .scroll((app.diff_scroll_offset, 0))
             .wrap(ratatui::widgets::Wrap { trim: false });
 
         f.render_widget(diff, main_chunks[1]);
