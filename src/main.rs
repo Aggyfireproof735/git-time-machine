@@ -32,7 +32,7 @@ CONTROLS:\n  \
     Enter       Restore to selected commit\n  \
     q/Esc       Quit")]
 struct Cli {
-    /// Show all reflog entries (default: last 50)
+    /// Show all reflog entries (max 1000, default: last 50)
     #[arg(short, long)]
     all: bool,
 }
